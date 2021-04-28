@@ -1,0 +1,28 @@
+.normal {
+    color: green;
+}
+
+.excess {
+    color: red;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th {
+    background: #cadadd;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+tbody tr:hover {
+    background: cornflowerblue;
+}
+
+body {
+    background-color: #dae0e0;
+}
