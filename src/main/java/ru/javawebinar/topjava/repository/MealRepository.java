@@ -8,4 +8,8 @@ public interface MealRepository {
     List<Meal> getAll();
 
     void save(Meal meal);
+
+    Meal show(int id);
+
+    void delete(int id);
 }

@@ -11,11 +11,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static ru.javawebinar.topjava.util.MealsUtil.meals;
 
 public class InMemMealRepository implements MealRepository {
+    private static MealRepository repository;
+
     private final AtomicInteger count = new AtomicInteger(0);
     private final Map<Integer, Meal> mealMap = new ConcurrentHashMap<>();
 
     {
         meals.forEach(this::save);
+    }
+
+    public static synchronized MealRepository getRepository() {
+        if (repository == null) {
+            repository = new InMemMealRepository();
+        }
+
+        return repository;
     }
 
     @Override
@@ -25,9 +35,22 @@ public class InMemMealRepository implements MealRepository {
 
     @Override
     public void save(Meal meal) {
-        if (meal.getId() == null)
+        if (meal.getId() == null) {
             meal.setId(count.incrementAndGet());
+            mealMap.put(meal.getId(), meal);
+            return;
+        }
 
-        mealMap.put(meal.getId(), meal);
+        mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+    }
+
+    @Override
+    public Meal show(int id) {
+        return mealMap.get(id);
+    }
+
+    @Override
+    public void delete(int id) {
+        mealMap.remove(id);
     }
 }
