@@ -3,16 +3,15 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository.ADMIN_ID;
@@ -55,12 +54,26 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        if (repository.isEmpty())
+        Map<Integer, Meal> meals = repository.get(userId);
+        if (meals.isEmpty())
             return Collections.emptyList();
 
-        return repository.get(userId).values().stream()
-                .sorted(Comparator.comparing(Meal::getDateTime))
+        return filteredByPredicate(meals, meal -> true);
+    }
+
+    @Override
+    public List<Meal> getFiltered(LocalDateTime fromDateTime, LocalDateTime toDateTime, int userId) {
+        Map<Integer, Meal> meals = repository.get(userId);
+        return filteredByPredicate(meals, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime(), fromDateTime, toDateTime));
+    }
+
+    private List<Meal> filteredByPredicate(Map<Integer, Meal> meals, Predicate<Meal> filter) {
+        return meals.values().stream()
+                .filter(filter)
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
+
+
 }
 

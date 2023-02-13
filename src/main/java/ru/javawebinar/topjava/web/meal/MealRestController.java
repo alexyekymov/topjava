@@ -7,9 +7,12 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static ru.javawebinar.topjava.util.MealsUtil.getFilteredTos;
 import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
@@ -49,5 +52,12 @@ public class MealRestController {
     public void delete(int id) {
         log.debug("delete meal with id={}", id);
         service.delete(id, authUserId());
+    }
+
+    public List<MealTo> getFiltered(LocalDate fromDate, LocalDate toDate, LocalTime fromTime, LocalTime toTime) {
+        int userId = authUserId();
+        log.info("getBetween dates({} - {}) time({} - {}) for user {}", fromDate, toDate, fromTime, toTime, userId);
+        List<Meal> mealsByDate = service.getFiltered(fromDate, toDate, userId);
+        return getFilteredTos(mealsByDate, authUserCaloriesPerDay(), fromTime, toTime);
     }
 }
