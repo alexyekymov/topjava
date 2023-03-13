@@ -1,6 +1,6 @@
-TRUNCATE TABLE meals;
-TRUNCATE TABLE user_role;
-TRUNCATE TABLE users;
+DELETE FROM meals;
+DELETE FROM user_role;
+DELETE FROM users;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
 INSERT INTO users (name, email, password)
