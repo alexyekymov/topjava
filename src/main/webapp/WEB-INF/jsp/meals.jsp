@@ -7,14 +7,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><spring:message code="meal.title"/></title>
-    <link rel="stylesheet" href="resources/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
 </head>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <section>
     <h2><spring:message code="meal.title"/></h2>
-    <form method="get" action="meals">
+    <form method="get" action="${pageContext.request.contextPath}/meals">
         <input type="hidden" name="action" value="filter">
         <dl>
             <dt><spring:message code="meal.fromDate"/>:</dt>
@@ -61,12 +61,12 @@
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
                 <td>
-                    <form method="GET" action="meals/${meal.id}/edit">
+                    <form method="GET" action="${pageContext.request.contextPath}/meals/${meal.id}/edit">
                         <input type="submit" value="<spring:message code="meal.edit"/>"/>
                     </form>
                 </td>
                 <td>
-                    <form method="POST" action="meals/${meal.id}/delete">
+                    <form method="POST" action="${pageContext.request.contextPath}/meals/${meal.id}/delete">
                         <input type="submit" value="<spring:message code="meal.delete"/>"/>
                     </form>
                 </td>
